@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Social Media Random Posts</title>
+    <title>Flatbooks - Local Bookstore</title>
     <style>
         * {
             margin: 0;
@@ -12,437 +12,271 @@
         }
 
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            padding: 40px 20px;
+            font-family: Georgia, serif;
+            background: #f5f5dc;
+            color: #333;
+            line-height: 1.6;
         }
 
-        .container {
-            max-width: 800px;
-            margin: 0 auto;
+        header {
+            background: #8b4513;
+            color: #fff8dc;
+            padding: 40px 20px;
+            text-align: center;
         }
 
         h1 {
-            text-align: center;
-            color: white;
-            font-size: 2.5rem;
+            font-size: 3rem;
             margin-bottom: 10px;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
         }
 
-        .subtitle {
+        .tagline {
+            font-style: italic;
+            opacity: 0.9;
+        }
+
+        main {
+            max-width: 1200px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+
+        .section-title {
             text-align: center;
-            color: rgba(255,255,255,0.9);
+            color: #8b4513;
             margin-bottom: 30px;
-            font-size: 1.1rem;
+            font-size: 2rem;
         }
 
-        .controls {
-            display: flex;
-            gap: 15px;
-            justify-content: center;
-            margin-bottom: 30px;
-            flex-wrap: wrap;
-        }
-
-        button {
-            padding: 12px 24px;
-            border: none;
-            border-radius: 25px;
-            font-size: 1rem;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            font-weight: 600;
-        }
-
-        .btn-fetch {
-            background: #ff6b6b;
-            color: white;
-        }
-
-        .btn-fetch:hover {
-            background: #ff5252;
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(255,107,107,0.4);
-        }
-
-        .btn-async {
-            background: #4ecdc4;
-            color: white;
-        }
-
-        .btn-async:hover {
-            background: #26d0ce;
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(78,205,196,0.4);
-        }
-
-        .btn-clear {
-            background: rgba(255,255,255,0.2);
-            color: white;
-            border: 2px solid white;
-        }
-
-        .btn-clear:hover {
-            background: white;
-            color: #667eea;
-        }
-
-        .loading {
-            text-align: center;
-            color: white;
-            font-size: 1.2rem;
-            padding: 40px;
-            display: none;
-        }
-
-        .loading.active {
-            display: block;
-        }
-
-        .spinner {
-            display: inline-block;
-            width: 40px;
-            height: 40px;
-            border: 4px solid rgba(255,255,255,0.3);
-            border-radius: 50%;
-            border-top-color: white;
-            animation: spin 1s ease-in-out infinite;
-            margin-bottom: 15px;
-        }
-
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
-
-        .posts-container {
+        #book-catalog {
             display: grid;
-            gap: 20px;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 30px;
         }
 
-        .post-card {
+        .book-card {
             background: white;
-            border-radius: 15px;
-            padding: 25px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-            animation: slideIn 0.5s ease-out;
-            position: relative;
+            border-radius: 10px;
             overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            transition: transform 0.3s;
+            border: 2px solid #deb887;
         }
 
-        @keyframes slideIn {
-            from {
-                opacity: 0;
-                transform: translateY(30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+        .book-card:hover {
+            transform: translateY(-10px);
         }
 
-        .post-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 15px 40px rgba(0,0,0,0.3);
-        }
-
-        .post-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 5px;
-            height: 100%;
-            background: linear-gradient(to bottom, #667eea, #764ba2);
-        }
-
-        .post-header {
-            display: flex;
-            align-items: center;
-            margin-bottom: 15px;
-        }
-
-        .user-avatar {
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        .book-cover {
+            height: 200px;
+            background: #654321;
             display: flex;
             align-items: center;
             justify-content: center;
-            color: white;
-            font-weight: bold;
+            color: #f5f5dc;
             font-size: 1.2rem;
-            margin-right: 15px;
-        }
-
-        .post-meta {
-            flex: 1;
-        }
-
-        .user-name {
-            font-weight: 700;
-            color: #2d3748;
-            font-size: 1.1rem;
-        }
-
-        .post-id {
-            color: #718096;
-            font-size: 0.85rem;
-        }
-
-        .post-title {
-            font-size: 1.3rem;
-            color: #2d3748;
-            margin-bottom: 10px;
-            font-weight: 600;
-            line-height: 1.4;
-        }
-
-        .post-body {
-            color: #4a5568;
-            line-height: 1.6;
-            font-size: 1rem;
-        }
-
-        .post-tags {
-            display: flex;
-            gap: 8px;
-            margin-top: 15px;
-            flex-wrap: wrap;
-        }
-
-        .tag {
-            background: #edf2f7;
-            color: #667eea;
-            padding: 5px 12px;
-            border-radius: 20px;
-            font-size: 0.8rem;
-            font-weight: 600;
-        }
-
-        .error-message {
-            background: #fed7d7;
-            color: #c53030;
+            text-align: center;
             padding: 20px;
-            border-radius: 10px;
-            text-align: center;
-            margin-bottom: 20px;
-            border-left: 4px solid #c53030;
-            display: none;
+            position: relative;
         }
 
-        .error-message.active {
-            display: block;
-        }
-
-        .stats {
-            text-align: center;
-            color: rgba(255,255,255,0.9);
-            margin-bottom: 20px;
-            font-size: 1rem;
-        }
-
-        .method-badge {
-            display: inline-block;
-            padding: 4px 12px;
-            border-radius: 15px;
+        .featured-badge {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: #ffd700;
+            color: #2c1810;
+            padding: 5px 10px;
+            border-radius: 20px;
             font-size: 0.75rem;
-            font-weight: 700;
-            margin-left: 10px;
-            text-transform: uppercase;
+            font-weight: bold;
         }
 
-        .badge-fetch {
-            background: #ff6b6b;
-            color: white;
+        .book-info {
+            padding: 20px;
         }
 
-        .badge-async {
-            background: #4ecdc4;
-            color: white;
+        .book-genre {
+            background: #deb887;
+            color: #2c1810;
+            padding: 4px 10px;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            font-weight: bold;
         }
 
-        @media (max-width: 600px) {
-            h1 {
-                font-size: 1.8rem;
-            }
-            
-            .post-card {
-                padding: 20px;
-            }
+        .book-title {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #2c1810;
+            margin: 10px 0;
+        }
+
+        .book-author {
+            color: #8b4513;
+            font-style: italic;
+            margin-bottom: 10px;
+        }
+
+        .book-price {
+            font-size: 1.3rem;
+            color: #228b22;
+            font-weight: bold;
+        }
+
+        .stock-status {
+            font-size: 0.9rem;
+            margin-top: 5px;
+        }
+
+        .in-stock {
+            color: #228b22;
+        }
+
+        .out-of-stock {
+            color: #dc143c;
+        }
+
+        footer {
+            background: #2c1810;
+            color: #f5f5dc;
+            text-align: center;
+            padding: 30px;
+            margin-top: 60px;
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1>📱 Social Feed</h1>
-        <p class="subtitle">Discover random posts from our community</p>
-        
-        <div class="controls">
-            <button class="btn-fetch" onclick="loadPostsWithFetch()">
-                Load with Fetch API
-            </button>
-            <button class="btn-async" onclick="loadPostsWithAsync()">
-                Load with Async/Await
-            </button>
-            <button class="btn-clear" onclick="clearPosts()">
-                Clear Posts
-            </button>
-        </div>
+    <header>
+        <h1 id="store-title">Bookstore Template</h1>
+        <p class="tagline">Your neighborhood book haven</p>
+    </header>
 
-        <div class="stats" id="stats"></div>
-        
-        <div class="loading" id="loading">
-            <div class="spinner"></div>
-            <p>Loading amazing posts...</p>
-        </div>
+    <main>
+        <h2 class="section-title">Our Collection</h2>
+        <div id="book-catalog"></div>
+    </main>
 
-        <div class="error-message" id="error"></div>
-
-        <div class="posts-container" id="postsContainer"></div>
-    </div>
+    <footer>
+        <p>&copy; 2024 Flatbooks. All rights reserved.</p>
+    </footer>
 
     <script>
-        // API Configuration
-        const API_URL = 'https://jsonplaceholder.typicode.com/posts';
-        const postsContainer = document.getElementById('postsContainer');
-        const loadingDiv = document.getElementById('loading');
-        const errorDiv = document.getElementById('error');
-        const statsDiv = document.getElementById('stats');
-
-        // Utility Functions
-        function showLoading() {
-            loadingDiv.classList.add('active');
-            errorDiv.classList.remove('active');
-            postsContainer.innerHTML = '';
-        }
-
-        function hideLoading() {
-            loadingDiv.classList.remove('active');
-        }
-
-        function showError(message) {
-            errorDiv.textContent = `⚠️ ${message}`;
-            errorDiv.classList.add('active');
-            hideLoading();
-        }
-
-        function updateStats(count, method) {
-            const badgeClass = method === 'fetch' ? 'badge-fetch' : 'badge-async';
-            const methodName = method === 'fetch' ? 'Fetch API' : 'Async/Await';
-            statsDiv.innerHTML = `Showing <strong>${count}</strong> random posts <span class="method-badge ${badgeClass}">${methodName}</span>`;
-        }
-
-        function clearPosts() {
-            postsContainer.innerHTML = '';
-            statsDiv.innerHTML = '';
-            errorDiv.classList.remove('active');
-        }
-
-        // Generate random tags for visual variety
-        function getRandomTags() {
-            const tags = ['#lifestyle', '#tech', '#random', '#daily', '#thoughts', '#inspiration', '#coding', '#design'];
-            const shuffled = tags.sort(() => 0.5 - Math.random());
-            return shuffled.slice(0, Math.floor(Math.random() * 3) + 2);
-        }
-
-        // Create HTML for a single post
-        function createPostHTML(post, index) {
-            const tags = getRandomTags();
-            const initials = post.title.split(' ').slice(0, 2).map(w => w[0]).join('').toUpperCase();
-            
-            return `
-                <article class="post-card" style="animation-delay: ${index * 0.1}s">
-                    <div class="post-header">
-                        <div class="user-avatar">${initials}</div>
-                        <div class="post-meta">
-                            <div class="user-name">User ${post.userId}</div>
-                            <div class="post-id">Post #${post.id}</div>
-                        </div>
-                    </div>
-                    <h2 class="post-title">${post.title}</h2>
-                    <p class="post-body">${post.body}</p>
-                    <div class="post-tags">
-                        ${tags.map(tag => `<span class="tag">${tag}</span>`).join('')}
-                    </div>
-                </article>
-            `;
-        }
-
-        // Method 1: Using Fetch with Promises (.then().catch())
-        function loadPostsWithFetch() {
-            showLoading();
-            
-            fetch(API_URL)
-                .then(response => {
-                    // Check if response is successful
-                    if (!response.ok) {
-                        throw new Error(`HTTP error! Status: ${response.status}`);
-                    }
-                    return response.json();
-                })
-                .then(posts => {
-                    // Shuffle and get random posts
-                    const shuffled = posts.sort(() => 0.5 - Math.random());
-                    const randomPosts = shuffled.slice(0, 5);
-                    
-                    // Loop through posts and display them
-                    let postsHTML = '';
-                    randomPosts.forEach((post, index) => {
-                        postsHTML += createPostHTML(post, index);
-                    });
-                    
-                    postsContainer.innerHTML = postsHTML;
-                    updateStats(randomPosts.length, 'fetch');
-                    hideLoading();
-                })
-                .catch(error => {
-                    console.error('Fetch error:', error);
-                    showError('Failed to load posts. Please try again later.');
-                });
-        }
-
-        // Method 2: Using Async/Await with Try/Catch
-        async function loadPostsWithAsync() {
-            showLoading();
-            
-            try {
-                // Await the fetch promise
-                const response = await fetch(API_URL);
-                
-                // Check if response is successful
-                if (!response.ok) {
-                    throw new Error(`HTTP error! Status: ${response.status}`);
+        // Bookstore data object
+        const bookstoreData = {
+            storeName: "Flatbooks",
+            tagline: "Where Every Page Turns into an Adventure",
+            books: [
+                {
+                    id: 1,
+                    title: "The Great Gatsby",
+                    author: "F. Scott Fitzgerald",
+                    genre: "Classic",
+                    price: 12.99,
+                    inStock: true,
+                    featured: true
+                },
+                {
+                    id: 2,
+                    title: "To Kill a Mockingbird",
+                    author: "Harper Lee",
+                    genre: "Fiction",
+                    price: 14.50,
+                    inStock: true,
+                    featured: false
+                },
+                {
+                    id: 3,
+                    title: "1984",
+                    author: "George Orwell",
+                    genre: "Dystopian",
+                    price: 11.99,
+                    inStock: true,
+                    featured: true
+                },
+                {
+                    id: 4,
+                    title: "Pride and Prejudice",
+                    author: "Jane Austen",
+                    genre: "Romance",
+                    price: 10.99,
+                    inStock: false,
+                    featured: false
+                },
+                {
+                    id: 5,
+                    title: "The Catcher in the Rye",
+                    author: "J.D. Salinger",
+                    genre: "Coming-of-age",
+                    price: 13.25,
+                    inStock: true,
+                    featured: false
+                },
+                {
+                    id: 6,
+                    title: "Brave New World",
+                    author: "Aldous Huxley",
+                    genre: "Dystopian",
+                    price: 12.50,
+                    inStock: true,
+                    featured: true
                 }
-                
-                // Await the JSON parsing
-                const posts = await response.json();
-                
-                // Shuffle and get random posts
-                const shuffled = posts.sort(() => 0.5 - Math.random());
-                const randomPosts = shuffled.slice(0, 5);
-                
-                // Loop through posts and display them using map
-                const postsHTML = randomPosts
-                    .map((post, index) => createPostHTML(post, index))
-                    .join('');
-                
-                postsContainer.innerHTML = postsHTML;
-                updateStats(randomPosts.length, 'async');
-                hideLoading();
-                
-            } catch (error) {
-                console.error('Async/Await error:', error);
-                showError('Failed to load posts. Please try again later.');
+            ]
+        };
+
+        // Update store title and tagline
+        function updateStoreInfo() {
+            const titleElement = document.getElementById('store-title');
+            const taglineElement = document.querySelector('.tagline');
+            
+            titleElement.textContent = bookstoreData.storeName;
+            taglineElement.textContent = bookstoreData.tagline;
+            document.title = bookstoreData.storeName;
+        }
+
+        // Create book card element
+        function createBookCard(book) {
+            const card = document.createElement('div');
+            card.className = 'book-card';
+            
+            const stockStatus = book.inStock ? 'in-stock' : 'out-of-stock';
+            const stockText = book.inStock ? 'In Stock' : 'Out of Stock';
+            
+            let coverHtml = `<div class="book-cover"><div>${book.title}</div></div>`;
+            
+            if (book.featured) {
+                coverHtml = `<div class="book-cover"><span class="featured-badge">Featured</span><div>${book.title}</div></div>`;
+            }
+            
+            card.innerHTML = `
+                ${coverHtml}
+                <div class="book-info">
+                    <span class="book-genre">${book.genre}</span>
+                    <h3 class="book-title">${book.title}</h3>
+                    <p class="book-author">by ${book.author}</p>
+                    <div class="book-price">$${book.price.toFixed(2)}</div>
+                    <div class="stock-status ${stockStatus}">${stockText}</div>
+                </div>
+            `;
+            
+            return card;
+        }
+
+        // Render all books to the catalog
+        function renderCatalog() {
+            const catalog = document.getElementById('book-catalog');
+            
+            for (let i = 0; i < bookstoreData.books.length; i++) {
+                const book = bookstoreData.books[i];
+                const card = createBookCard(book);
+                catalog.appendChild(card);
             }
         }
 
-        // Auto-load posts on page load using async/await
-        window.addEventListener('DOMContentLoaded', () => {
-            loadPostsWithAsync();
+        // Initialize when DOM is loaded
+        document.addEventListener('DOMContentLoaded', function() {
+            updateStoreInfo();
+            renderCatalog();
         });
     </script>
 </body>
