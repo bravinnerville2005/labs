@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NWS Weather Alerts</title>
+    <style>
+        body { font-family: Arial, sans-serif; max-width: 800px; margin: 0 auto; padding: 20px; background: #f0f2f5; }
+        h1 { color: #1e3a8a; }
+        .btn { padding: 10px 20px; margin: 5px; border: none; border-radius: 5px; cursor: pointer; color: white; }
+        .btn-fetch { background: #2563eb; }
+        .btn-async { background: #10b981; }
+        select { padding: 10px; font-size: 16px; margin-right: 10px; }
+        .alert { background: white; padding: 15px; margin: 10px 0; border-radius: 8px; border-left: 4px solid #f59e0b; }
+        .alert.severe { border-left-color: #dc2626; }
+        .error { color: #dc2626; padding: 20px; }
+        .loading { padding: 20px; color: #666; }
+    </style>
+</head>
+<body>
+    <h1>🌩️ Weather Alerts</h1>
+    
+    <select id="state">
+        <option value="">Select state...</option>
+        <option value="CA">California</option>
+        <option value="TX">Texas</option>
+        <option value="FL">Florida</option>
+        <option value="NY">New York</option>
+        <option value="IL">Illinois</option>
+    </select>
+    
+    <button class="btn btn-fetch" onclick="loadFetch()">Fetch</button>
+    <button class="btn btn-async" onclick="loadAsync()">Async/Await</button>
+    
+    <div id="output"></div>
+
+    <script>
+        const API = 'https://api.weather.gov/alerts/active';
+        const HEADERS = { 'User-Agent': '(weather-app, test@example.com)' };
+
+        function show(html) {
+            document.getElementById('output').innerHTML = html;
+        }
+
+        function makeCard(alert) {
+            const p = alert.properties;
+            return `<div class="alert ${p.severity === 'Severe' ? 'severe' : ''}">
+                <strong>${p.event}</strong> (${p.severity})<br>
+                <small>${p.areaDesc} | ${p.senderName}</small><br>
+                ${p.headline}
+            </div>`;
+        }
+
+        // Fetch with Promises
+        function loadFetch() {
+            const state = document.getElementById('state').value;
+            if (!state) return show('<div class="error">Select a state</div>');
+            
+            show('<div class="loading">Loading...</div>');
+            
+            fetch(`${API}?area=${state}`, { headers: HEADERS })
+                .then(r => {
+                    if (!r.ok) throw new Error(`HTTP ${r.status}`);
+                    return r.json();
+                })
+                .then(data => {
+                    const alerts = data.features || [];
+                    show(alerts.length ? alerts.map(makeCard).join('') : '<p>No alerts</p>');
+                })
+                .catch(err => show(`<div class="error">${err.message}</div>`));
+        }
+
+        // Async/Await
+        async function loadAsync() {
+            const state = document.getElementById('state').value;
+            if (!state) return show('<div class="error">Select a state</div>');
+            
+            show('<div class="loading">Loading...</div>');
+            
+            try {
+                const r = await fetch(`${API}?area=${state}`, { headers: HEADERS });
+                if (!r.ok) throw new Error(`HTTP ${r.status}`);
+                const data = await r.json();
+                const alerts = data.features || [];
+                show(alerts.length ? alerts.map(makeCard).join('') : '<p>No alerts</p>');
+            } catch (err) {
+                show(`<div class="error">${err.message}</div>`);
+            }
+        }
+    </script>
+</body>
+</html>
